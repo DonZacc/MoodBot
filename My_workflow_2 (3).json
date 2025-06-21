@@ -1,0 +1,242 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "2d3a3298-e57e-46f8-8c35-1f374d852528",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1520,
+        0
+      ],
+      "id": "d070edf4-58d8-455c-bcb6-a289b43cb1dc",
+      "name": "Webhook",
+      "webhookId": "2d3a3298-e57e-46f8-8c35-1f374d852528"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a supportive mental health assistant. Read the user's message, understand their emotional tone.\n\nWhen a user shares how they're feeling, do the following:\n\n- First line: Write “Mood:” followed by your understanding of their emotional tone  \n- Leave one empty line  \n- Then, give a short and gentle response with helpful suggestions. Use insights from the web (via SerpAPI), but do not include any links. Just mention what might help based on what others usually find useful.\n\nKeep your reply friendly, natural, and easy to understand.\n. Return a single paragraph that includes everything, written like a personal response.\n\nMessage: {{$json.data.text}}\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -140,
+        -60
+      ],
+      "id": "49473a61-2d31-4f7c-b47f-5009c740419c",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [
+        100,
+        140
+      ],
+      "id": "56f7473c-6d26-4881-ad5b-8be5c14c08b7",
+      "name": "SerpAPI",
+      "credentials": {
+        "serpApi": {
+          "id": "MJ1cZmcbWWll57R6",
+          "name": "SerpAPI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "mindcraft-gpt4o",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        140
+      ],
+      "id": "1aab5553-d1cd-4e58-8050-f28853a90d9a",
+      "name": "Azure OpenAI Chat Model",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "MUCNgbKBhDOu4gPX",
+          "name": "Azure Open AI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "sendAndWait",
+        "guildId": {
+          "__rl": true,
+          "value": "1385640474077040721",
+          "mode": "list",
+          "cachedResultName": "AI Agents Showcase",
+          "cachedResultUrl": "https://discord.com/channels/1385640474077040721"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "1385640474718634208",
+          "mode": "list",
+          "cachedResultName": "general",
+          "cachedResultUrl": "https://discord.com/channels/1385640474077040721/1385640474718634208"
+        },
+        "message": "🌱 Hey! Just checking in — how are you feeling today? I'm here to listen.\n",
+        "responseType": "freeText",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -380,
+        -60
+      ],
+      "id": "601dce2f-6352-4e88-9b3a-dfb7dc2cb42d",
+      "name": "Discord1",
+      "webhookId": "abe95a46-fd0f-4fed-915f-c38904c1cb68",
+      "credentials": {
+        "discordBotApi": {
+          "id": "Eo7MnUcv5QPZDdO9",
+          "name": "Discord Bot account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "guildId": {
+          "__rl": true,
+          "value": "1385640474077040721",
+          "mode": "list",
+          "cachedResultName": "AI Agents Showcase",
+          "cachedResultUrl": "https://discord.com/channels/1385640474077040721"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "1385640474718634208",
+          "mode": "list",
+          "cachedResultName": "general",
+          "cachedResultUrl": "https://discord.com/channels/1385640474077040721/1385640474718634208"
+        },
+        "content": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        200,
+        -60
+      ],
+      "id": "e3b66964-b25e-4eca-9174-b177f2a64bb7",
+      "name": "Discord",
+      "webhookId": "efa07ec8-0446-4e81-bf2d-e546a10f5d89",
+      "credentials": {
+        "discordBotApi": {
+          "id": "Eo7MnUcv5QPZDdO9",
+          "name": "Discord Bot account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            },
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -580,
+        -60
+      ],
+      "id": "de423b7f-b661-454b-8a59-ec238ed17c9d",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        []
+      ]
+    },
+    "SerpAPI": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Azure OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Discord1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c36c371f-7983-4de9-ad19-d0ba0c1fe848",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "31d4b4194d87620077225bd2428fe1820aaa92236f05294dfe9e6e864a417eff"
+  },
+  "id": "zLOBJ8WtzHEQF6W9",
+  "tags": []
+}
